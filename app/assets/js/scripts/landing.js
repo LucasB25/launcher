@@ -163,17 +163,73 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '&#8226; ' + (serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection'))
+    server_selection_button.innerHTML = serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection')
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
+
+async function populateAirfieldZDropdown() {
+    const distro = await DistroAPI.getDistribution()
+    const servers = distro.servers
+    const dd = document.getElementById('serverDropdown')
+    if(!dd) return
+    dd.innerHTML = ''
+    const currentServId = ConfigManager.getSelectedServer()
+    
+    for (let serv of servers) {
+        let btn = document.createElement('div')
+        btn.className = 'serverDropdownItem'
+        if(serv.rawServer.id === currentServId) {
+            btn.classList.add('selected')
+        }
+        btn.innerText = serv.rawServer.name
+        btn.onclick = (e) => {
+            e.stopPropagation()
+            updateSelectedServer(serv)
+            refreshServerStatus(true)
+            dd.style.display = 'none'
+            document.getElementById('serverSelectionBox').classList.remove('open')
+            document.getElementById('serverSelectionChevron').style.transform = 'none'
+            populateAirfieldZDropdown() // refresh selected state
+        }
+        dd.appendChild(btn)
+    }
+}
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = '&#8226; ' + Lang.queryJS('landing.selectedServer.loading')
-server_selection_button.onclick = async e => {
-    e.target.blur()
-    await toggleServerSelection(true)
+server_selection_button.innerHTML = Lang.queryJS('landing.selectedServer.loading')
+
+// Setup custom dropdown logic
+const serverSelectionBox = document.getElementById('serverSelectionBox')
+if(serverSelectionBox) {
+    serverSelectionBox.onclick = async e => {
+        const dd = document.getElementById('serverDropdown')
+        const chevron = document.getElementById('serverSelectionChevron')
+        if(dd.style.display === 'none') {
+            await populateAirfieldZDropdown()
+            dd.style.display = 'flex'
+            serverSelectionBox.classList.add('open')
+            chevron.style.transform = 'rotate(180deg)'
+        } else {
+            dd.style.display = 'none'
+            serverSelectionBox.classList.remove('open')
+            chevron.style.transform = 'none'
+        }
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if(!serverSelectionBox.contains(e.target)) {
+            const dd = document.getElementById('serverDropdown')
+            const chevron = document.getElementById('serverSelectionChevron')
+            if(dd && dd.style.display !== 'none') {
+                dd.style.display = 'none'
+                serverSelectionBox.classList.remove('open')
+                chevron.style.transform = 'none'
+            }
+        }
+    })
 }
 
 // Update Mojang Status Color

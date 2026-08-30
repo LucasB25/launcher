@@ -22,8 +22,11 @@
 
         <div id="launch_content">
             <div id="serverSelectionBox">
+                <div id="serverDropdown" style="display: none;">
+                    <!-- Dropdown items will be injected here -->
+                </div>
                 <button id="server_selection_button" class="bot_label"><%- lang('landing.launchButtonPlaceholder') %></button>
-                <svg viewBox="0 0 24 24" class="dropdownArrow"><path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
+                <svg viewBox="0 0 24 24" class="dropdownArrow" id="serverSelectionChevron"><path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
             </div>
             
             <div id="server_status_wrapper">
