@@ -518,6 +518,24 @@ function processLogOut(val, isLastAccount){
         switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
             ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
         })
+    } else if (targetAcc.type === 'azuriom') {
+        AuthManager.removeAzuriomAccount(uuid).then(() => {
+            if(!isLastAccount && uuid === prevSelAcc.uuid){
+                const selAcc = ConfigManager.getSelectedAccount()
+                refreshAuthAccountSelected(selAcc.uuid)
+                updateSelectedAccount(selAcc)
+                validateSelectedAccount()
+            }
+            if(isLastAccount) {
+                loginCancelEnabled(false)
+                loginViewOnSuccess = VIEWS.settings
+                loginViewOnCancel = VIEWS.login
+                switchView(getCurrentView(), VIEWS.login)
+            }
+        })
+        $(parent).fadeOut(250, () => {
+            parent.remove()
+        })
     } else {
         AuthManager.removeMojangAccount(uuid).then(() => {
             if(!isLastAccount && uuid === prevSelAcc.uuid){

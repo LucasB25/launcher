@@ -148,12 +148,16 @@ function formDisabled(v){
     loginCancelButton.disabled = v
     loginUsername.disabled = v
     loginPassword.disabled = v
-    if(v){
-        checkmarkContainer.setAttribute('disabled', v)
-    } else {
-        checkmarkContainer.removeAttribute('disabled')
+    if(checkmarkContainer) {
+        if(v){
+            checkmarkContainer.setAttribute('disabled', v)
+        } else {
+            checkmarkContainer.removeAttribute('disabled')
+        }
     }
-    loginRememberOption.disabled = v
+    if(loginRememberOption) {
+        loginRememberOption.disabled = v
+    }
 }
 
 let loginViewOnSuccess = VIEWS.landing

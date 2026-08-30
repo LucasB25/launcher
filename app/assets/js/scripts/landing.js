@@ -177,7 +177,9 @@ server_selection_button.onclick = async e => {
 }
 
 // Update Mojang Status Color
-const refreshMojangStatuses = async function(){
+const refreshMojangStatuses = async function(fade = false){
+    const mojangStatusEssentialContainer = document.getElementById('mojangStatusEssentialContainer')
+    if (!mojangStatusEssentialContainer) return
     loggerLanding.info('Refreshing Mojang Statuses..')
 
     let status = 'grey'
@@ -235,7 +237,9 @@ const refreshMojangStatuses = async function(){
     document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
 }
 
-const refreshServerStatus = async (fade = false) => {
+const refreshServerStatus = async function(fade = false){
+    const landingPlayerLabel = document.getElementById('landingPlayerLabel')
+    if (!landingPlayerLabel) return
     loggerLanding.info('Refreshing Server Status')
     const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 

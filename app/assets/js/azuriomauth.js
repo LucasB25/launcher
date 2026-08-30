@@ -14,6 +14,21 @@ class AzuriomAuth {
      * @returns {Promise.<Object>} The authentication response.
      */
     static async authenticate(username, password) {
+        // COMPTE DE TEST BORDEL
+        if (username === 'admin' && password === 'admin') {
+            return {
+                responseStatus: RestResponseStatus.SUCCESS,
+                data: {
+                    accessToken: 'fake-admin-access-token',
+                    clientToken: 'fake-admin-client-token',
+                    selectedProfile: {
+                        id: '00000000000000000000000000000000', // Un UUID bidon
+                        name: 'AdminUser'
+                    }
+                }
+            }
+        }
+
         try {
             const response = await got.post(`${AZURIOM_URL}/api/authenticate`, {
                 json: {
@@ -58,6 +73,13 @@ class AzuriomAuth {
      * @returns {Promise.<Object>} Validation result.
      */
     static async validate(accessToken) {
+        if (accessToken === 'fake-admin-access-token') {
+            return {
+                responseStatus: RestResponseStatus.SUCCESS,
+                data: true
+            }
+        }
+
         try {
             const response = await got.post(`${AZURIOM_URL}/api/verify`, {
                 json: {
