@@ -14,9 +14,9 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder build",
-    "dist:win": "npm run dist -- -w",
-    "dist:mac": "npm run dist -- -m",
-    "dist:linux": "npm run dist -- -l",
+    "dist:win": "pnpm run dist -- -w",
+    "dist:mac": "pnpm run dist -- -m",
+    "dist:linux": "pnpm run dist -- -l",
     "lint": "eslint ."
   },
   "engines": {
