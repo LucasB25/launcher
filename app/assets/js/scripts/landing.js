@@ -243,31 +243,33 @@ const refreshServerStatus = async function(fade = false){
     loggerLanding.info('Refreshing Server Status')
     const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 
-    let pLabel = Lang.queryJS('landing.serverStatus.server')
-    let pVal = Lang.queryJS('landing.serverStatus.offline')
+    let pLabel = 'Offline'
+    let isOnline = false
 
     try {
-
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
         console.log(servStat)
-        pLabel = Lang.queryJS('landing.serverStatus.players')
-        pVal = servStat.players.online + '/' + servStat.players.max
-
+        pLabel = servStat.players.online + '/' + servStat.players.max + ' Joueurs'
+        isOnline = true
     } catch (err) {
         loggerLanding.warn('Unable to refresh server status, assuming offline.')
         loggerLanding.debug(err)
     }
+    
+    const applyUpdate = () => {
+        document.getElementById('landingPlayerLabel').innerHTML = pLabel
+        const dot = document.getElementById('serverStatusDot')
+        if(dot) dot.className = isOnline ? 'online' : 'offline'
+    }
+
     if(fade){
         $('#server_status_wrapper').fadeOut(250, () => {
-            document.getElementById('landingPlayerLabel').innerHTML = pLabel
-            document.getElementById('player_count').innerHTML = pVal
+            applyUpdate()
             $('#server_status_wrapper').fadeIn(500)
         })
     } else {
-        document.getElementById('landingPlayerLabel').innerHTML = pLabel
-        document.getElementById('player_count').innerHTML = pVal
+        applyUpdate()
     }
-    
 }
 
 refreshMojangStatuses()
@@ -767,13 +769,7 @@ newsErrorRetry.onclick = () => {
     })
 }
 
-newsArticleContentScrollable.onscroll = (e) => {
-    if(e.target.scrollTop > Number.parseFloat($('.newsArticleSpacerTop').css('height'))){
-        newsContent.setAttribute('scrolled', '')
-    } else {
-        newsContent.removeAttribute('scrolled')
-    }
-}
+// Scroll handler removed
 
 /**
  * Reload the news without restarting.
@@ -939,21 +935,35 @@ document.addEventListener('keydown', (e) => {
  * @param {number} index The article index.
  */
 function displayArticle(articleObject, index){
-    newsArticleTitle.innerHTML = articleObject.title
-    newsArticleTitle.href = articleObject.link
-    newsArticleAuthor.innerHTML = 'by ' + articleObject.author
-    newsArticleDate.innerHTML = articleObject.date
-    newsArticleComments.innerHTML = articleObject.comments
-    newsArticleComments.href = articleObject.commentsLink
-    newsArticleContentScrollable.innerHTML = '<div id="newsArticleContentWrapper"><div class="newsArticleSpacerTop"></div>' + articleObject.content + '<div class="newsArticleSpacerBot"></div></div>'
-    Array.from(newsArticleContentScrollable.getElementsByClassName('bbCodeSpoilerButton')).forEach(v => {
-        v.onclick = () => {
-            const text = v.parentElement.getElementsByClassName('bbCodeSpoilerText')[0]
-            text.style.display = text.style.display === 'block' ? 'none' : 'block'
+    let html = ''
+    for (let art of newsArr) {
+        let imgHtml = ''
+        let contentHtml = art.content || ''
+        
+        const imgMatch = contentHtml.match(/<img[^>]+src="([^">]+)"/i)
+        if (imgMatch) {
+            imgHtml = `<img src="${imgMatch[1]}" class="airfieldz-news-image">`
         }
-    })
-    newsNavigationStatus.innerHTML = Lang.query('ejs.landing.newsNavigationStatus', {currentPage: index, totalPages: newsArr.length})
-    newsContent.setAttribute('article', index-1)
+        
+        // Strip HTML tags for clean preview
+        let textOnly = contentHtml.replace(/<[^>]*>?/gm, '').trim()
+        if(textOnly.length > 200) textOnly = textOnly.substring(0, 200) + '...'
+        
+        html += `
+        <div class="airfieldz-news-card">
+            <div class="airfieldz-news-meta">
+                <div class="airfieldz-news-author-icon"></div>
+                <span>${art.author || 'AirfieldZ'}</span>
+                <span>•</span>
+                <span>${art.date}</span>
+            </div>
+            <a href="${art.link}" class="airfieldz-news-title" target="_blank">${art.title}</a>
+            <div class="airfieldz-news-content">${textOnly}</div>
+            ${imgHtml}
+        </div>
+        `
+    }
+    newsArticleContentScrollable.innerHTML = html
 }
 
 /**
