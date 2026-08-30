@@ -525,7 +525,7 @@ body, button {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     width: 280px;
 }
 
@@ -541,16 +541,18 @@ body, button {
 
 /* Span which displays errors related to login field content. */
 .loginErrorSpan {
-    font-family: 'Avenir Medium';
+    font-family: 'Avenir Medium', sans-serif;
     font-weight: bold;
-    font-size: 8px;
-    color: #ff1b0c;
-    width: 100%;
-    text-align: right;
+    font-size: 11px;
+    color: #ff5555;
     position: absolute;
-    top: 7px;
+    bottom: -18px;
+    left: 4px;
+    width: 100%;
+    text-align: left;
     opacity: 0;
-    transition: 0.25s ease;
+    transition: 0.2s ease;
+    pointer-events: none;
 }
 
 .shake {
@@ -595,6 +597,9 @@ body, button {
 .loginField:focus {
     outline: none;
     border-color: #555555;
+}
+.loginField.error {
+    border-color: #ff5555 !important;
 }
 .loginField:focus {
     outline: none;

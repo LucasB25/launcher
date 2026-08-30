@@ -31,6 +31,8 @@ let lu = false, lp = false
 function showError(element, value){
     element.innerHTML = value
     element.style.opacity = 1
+    if (element === loginEmailError) loginUsername.classList.add('error')
+    if (element === loginPasswordError) loginPassword.classList.add('error')
 }
 
 /**
@@ -59,6 +61,7 @@ function validateEmail(value){
             lu = false
         } else {
             loginEmailError.style.opacity = 0
+            loginUsername.classList.remove('error')
             lu = true
             if(lp){
                 loginDisabled(false)
@@ -79,6 +82,7 @@ function validateEmail(value){
 function validatePassword(value){
     if(value){
         loginPasswordError.style.opacity = 0
+        loginPassword.classList.remove('error')
         lp = true
         if(lu){
             loginDisabled(false)

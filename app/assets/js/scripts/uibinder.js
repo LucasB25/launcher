@@ -81,8 +81,11 @@ async function showMainUI(data){
         }
 
         if(ConfigManager.isFirstLaunch()){
-            currentView = VIEWS.welcome
-            $(VIEWS.welcome).fadeIn(1000)
+            loginCancelEnabled(false)
+            loginViewOnSuccess = VIEWS.landing
+            loginViewOnCancel = VIEWS.login
+            currentView = VIEWS.login
+            $(VIEWS.login).fadeIn(1000)
         } else {
             if(isLoggedIn){
                 currentView = VIEWS.landing
