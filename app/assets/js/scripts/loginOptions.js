@@ -1,6 +1,6 @@
 const loginOptionsCancelContainer = document.getElementById('loginOptionCancelContainer')
 const loginOptionMicrosoft = document.getElementById('loginOptionMicrosoft')
-const loginOptionMojang = document.getElementById('loginOptionMojang')
+const loginOptionAzuriom = document.getElementById('loginOptionAzuriom')
 const loginOptionsCancelButton = document.getElementById('loginOptionCancelButton')
 
 let loginOptionsCancellable = false
@@ -28,7 +28,7 @@ loginOptionMicrosoft.onclick = (e) => {
     })
 }
 
-loginOptionMojang.onclick = (e) => {
+loginOptionAzuriom.onclick = (e) => {
     switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
         loginViewOnSuccess = loginOptionsViewOnLoginSuccess
         loginViewOnCancel = loginOptionsViewOnLoginCancel

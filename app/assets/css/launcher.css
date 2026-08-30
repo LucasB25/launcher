@@ -465,6 +465,12 @@ body, button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    padding: 40px 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Login form anchor styles. */
@@ -486,38 +492,51 @@ body, button {
 
 /* Logo on login form. */
 #loginImageSeal {
-    border-radius: 50%;
-    border: 2px solid #cad7e1;
-    background: rgba(1, 2, 1, 0.5);
-    height: 125px;
-    width: 125px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    border-radius: 0px;
+    border: none;
+    background: none;
+    height: 90px;
+    width: 90px;
+    box-shadow: none;
     margin-bottom: 20px;
+    object-fit: contain;
 }
 
 /* Header on login view. */
 #loginSubheader {
-    font-family: 'Avenir Medium';
-    margin-bottom: 25px;
-    font-size: 12px;
-    letter-spacing: 1px;
+    font-family: 'Avenir Medium', sans-serif;
+    margin-bottom: 5px;
+    font-size: 28px;
+    letter-spacing: 0px;
     font-weight: bold;
+    color: white;
+}
+
+#loginDescription {
+    color: #a0a0a0;
+    font-size: 13px;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 /* Container to organize login field elements. */
 .loginFieldContainer {
     position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
+    margin-bottom: 15px;
+    width: 280px;
 }
 
 /* SVG icons on the login view. */
 .loginSVG {
-    fill: #fff;
-    height: 20px;
-    width: 20px;
+    position: absolute;
+    left: 15px;
+    fill: #757575;
+    height: 16px;
+    width: 16px;
+    pointer-events: none;
 }
 
 /* Span which displays errors related to login field content. */
@@ -558,20 +577,24 @@ body, button {
 
 /* Login text input styles. */
 .loginField {
-    font-family: 'Avenir Book';
-    background: none;
-    border-width: 1.5px 0px 0px 0px;
-    border-style: solid;
-    width: 250px;
-    margin-bottom: 20px;
-    border-color: #fff;
-    color: rgba(255, 255, 255, 0.75);
-    font-weight: bold;
-    text-align: center;
+    font-family: 'Avenir Book', sans-serif;
+    background: #2b2b2b;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 0px;
+    color: white;
+    font-weight: normal;
+    text-align: left;
     box-sizing: border-box;
-    padding: 7.5px;
-    font-size: 10px;
-    letter-spacing: 1px;
+    padding: 12px 12px 12px 42px;
+    font-size: 13px;
+    letter-spacing: 0px;
+    transition: 0.2s ease;
+}
+.loginField:focus {
+    outline: none;
+    border-color: #555555;
 }
 .loginField:focus {
     outline: none;
@@ -580,10 +603,10 @@ body, button {
     color: rgba(255, 255, 255, 0.50);
 }
 .loginField::-webkit-input-placeholder {
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-align: center;
+    color: #6c6c6c;
+    font-size: 13px;
+    letter-spacing: 0px;
+    text-align: left;
     font-weight: bold;
 }
 .loginField:focus::-webkit-input-placeholder {
@@ -609,42 +632,52 @@ body, button {
 }
 
 /* Login button styles. */
+#loginButtonContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
 #loginButton {
-    background: none;
+    background: #2e2e2e;
+    color: white;
     font-weight: bold;
-    letter-spacing: 2px;
-    border: none;
-    padding: 15px 5px;
+    letter-spacing: 0px;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    padding: 12px;
     margin: 10px 0px;
     cursor: pointer;
     position: relative;
-    right: -20px;
-    transition: 0.5s ease;
+    right: 0px;
+    width: 280px;
+    transition: 0.2s ease;
 }
 #loginButton:disabled {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.50);
     pointer-events: none;
 }
 #loginButton[loading] {
-    color: #fff;
+    color: transparent;
 }
 #loginButton:hover,
 #loginButton:focus {
-    text-shadow: 0px 0px 20px #fff;
+    background: #3b3b3b;
     outline: none;
 }
 #loginButton:active {
-    color: #c7c7c7;
-    text-shadow:  0px 0px 20px #c7c7c7;
+    background: #222222;
 }
 #loginSVG {
-    -webkit-transform: translate3d(0, 0, 0);
-    overflow: visible;
-    transform: rotate(90deg);
-    margin-left: 20px;
-    transition: 0.25s ease;
-    width: 20px;
-    height: 20px;
+    -webkit-transform: none;
+    transform: none;
+    margin-left: 0px;
+    margin-right: 10px;
+    transition: 0.2s ease;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    left: 0;
 }
 #loginButton:hover #loginSVG,
 #loginButton:focus #loginSVG {

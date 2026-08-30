@@ -88,11 +88,11 @@ async function showMainUI(data){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
             } else {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.landing
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                currentView = VIEWS.loginOptions
-                $(VIEWS.loginOptions).fadeIn(1000)
+                loginCancelEnabled(false)
+                loginViewOnSuccess = VIEWS.landing
+                loginViewOnCancel = VIEWS.login
+                currentView = VIEWS.login
+                $(VIEWS.login).fadeIn(1000)
             }
         }
 
@@ -352,12 +352,12 @@ async function validateSelectedAccount(){
                     validateEmail(selectedAcc.username)
                 }
                 
-                loginOptionsViewOnLoginSuccess = getCurrentView()
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                loginViewOnSuccess = getCurrentView()
+                loginViewOnCancel = VIEWS.login
 
                 if(accLen > 0) {
-                    loginOptionsViewOnCancel = getCurrentView()
-                    loginOptionsViewCancelHandler = () => {
+                    loginViewOnCancel = getCurrentView()
+                    loginCancelHandler = () => {
                         if(isMicrosoft) {
                             ConfigManager.addMicrosoftAuthAccount(
                                 selectedAcc.uuid,
@@ -369,17 +369,17 @@ async function validateSelectedAccount(){
                                 selectedAcc.microsoft.expires_at
                             )
                         } else {
-                            ConfigManager.addMojangAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
+                            ConfigManager.addAzuriomAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
                         }
                         ConfigManager.save()
                         validateSelectedAccount()
                     }
-                    loginOptionsCancelEnabled(true)
+                    loginCancelEnabled(true)
                 } else {
-                    loginOptionsCancelEnabled(false)
+                    loginCancelEnabled(false)
                 }
                 toggleOverlay(false)
-                switchView(getCurrentView(), VIEWS.loginOptions)
+                switchView(getCurrentView(), VIEWS.login)
             })
             setDismissHandler(() => {
                 if(accLen > 1){

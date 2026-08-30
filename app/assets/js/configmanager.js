@@ -350,6 +350,42 @@ exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName
 }
 
 /**
+ * Update the access token of an authenticated azuriom account.
+ * 
+ * @param {string} uuid The uuid of the authenticated account.
+ * @param {string} accessToken The new Access Token.
+ * 
+ * @returns {Object} The authenticated account object created by this action.
+ */
+exports.updateAzuriomAuthAccount = function(uuid, accessToken){
+    config.authenticationDatabase[uuid].accessToken = accessToken
+    config.authenticationDatabase[uuid].type = 'azuriom'
+    return config.authenticationDatabase[uuid]
+}
+
+/**
+ * Adds an authenticated azuriom account to the database to be stored.
+ * 
+ * @param {string} uuid The uuid of the authenticated account.
+ * @param {string} accessToken The accessToken of the authenticated account.
+ * @param {string} username The username of the authenticated account.
+ * @param {string} displayName The in game name of the authenticated account.
+ * 
+ * @returns {Object} The authenticated account object created by this action.
+ */
+exports.addAzuriomAuthAccount = function(uuid, accessToken, username, displayName){
+    config.selectedAccount = uuid
+    config.authenticationDatabase[uuid] = {
+        type: 'azuriom',
+        accessToken,
+        username: username.trim(),
+        uuid: uuid.trim(),
+        displayName: displayName.trim()
+    }
+    return config.authenticationDatabase[uuid]
+}
+
+/**
  * Update the tokens of an authenticated microsoft account.
  * 
  * @param {string} uuid The uuid of the authenticated account.

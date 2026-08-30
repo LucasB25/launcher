@@ -225,9 +225,8 @@ let win
 function createWindow() {
 
     win = new BrowserWindow({
-        title: 'Microsoft Login',
-        width: 520,
-        height: 600,
+        width: 980,
+        height: 552,
         icon: getPlatformIcon('SealCircle'),
         frame: false,
         webPreferences: {

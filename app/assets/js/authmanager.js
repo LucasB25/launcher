@@ -15,6 +15,7 @@ const { RestResponseStatus } = require('helios-core/common')
 const { MojangRestAPI, MojangErrorCode } = require('helios-core/mojang')
 const { MicrosoftAuth, MicrosoftErrorCode } = require('helios-core/microsoft')
 const { AZURE_CLIENT_ID }    = require('./ipcconstants')
+const { AzuriomAuth }        = require('./azuriomauth')
 const Lang = require('./langloader')
 
 const log = LoggerUtil.getLogger('AuthManager')
@@ -167,6 +168,42 @@ exports.addMojangAccount = async function(username, password) {
     }
 }
 
+/**
+ * Add an Azuriom account. This will authenticate the given credentials with Azuriom's
+ * API.
+ * 
+ * @param {string} username The account username or email.
+ * @param {string} password The account password.
+ * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
+ */
+exports.addAzuriomAccount = async function(username, password) {
+    try {
+        const response = await AzuriomAuth.authenticate(username, password)
+        console.log(response)
+        if(response.responseStatus === RestResponseStatus.SUCCESS) {
+
+            const session = response.data
+            if(session.selectedProfile != null){
+                const ret = ConfigManager.addAzuriomAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
+                if(ConfigManager.getClientToken() == null){
+                    ConfigManager.setClientToken(session.clientToken)
+                }
+                ConfigManager.save()
+                return ret
+            } else {
+                return Promise.reject({ title: "Account Error", desc: "No profile found." })
+            }
+
+        } else {
+            return Promise.reject({ title: "Authentication Error", desc: response.error || "Invalid credentials." })
+        }
+        
+    } catch (err){
+        log.error(err)
+        return Promise.reject({ title: "Unknown Error", desc: "An unknown error occurred during authentication." })
+    }
+}
+
 const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2 }
 
 /**
@@ -292,6 +329,23 @@ exports.removeMojangAccount = async function(uuid){
 }
 
 /**
+ * Remove an Azuriom account.
+ * 
+ * @param {string} uuid The UUID of the account to be removed.
+ * @returns {Promise.<void>} Promise which resolves to void when the action is complete.
+ */
+exports.removeAzuriomAccount = async function(uuid){
+    try {
+        ConfigManager.removeAuthAccount(uuid)
+        ConfigManager.save()
+        return Promise.resolve()
+    } catch (err){
+        log.error('Error while removing account', err)
+        return Promise.reject(err)
+    }
+}
+
+/**
  * Remove a Microsoft account. It is expected that the caller will invoke the OAuth logout
  * through the ipc renderer.
  * 
@@ -342,6 +396,30 @@ async function validateSelectedMojangAccount(){
         }
     }
     
+}
+
+/**
+ * Validate the selected Azuriom account.
+ * 
+ * @returns {Promise.<boolean>} Promise which resolves to true if the access token is valid,
+ * otherwise false.
+ */
+async function validateSelectedAzuriomAccount(){
+    const current = ConfigManager.getSelectedAccount()
+    const response = await AzuriomAuth.validate(current.accessToken)
+
+    if(response.responseStatus === RestResponseStatus.SUCCESS) {
+        const isValid = response.data
+        if(!isValid){
+            log.info('Azuriom account access token is invalid.')
+            return false
+        } else {
+            log.info('Azuriom account access token validated.')
+            return true
+        }
+    } else {
+        return false
+    }
 }
 
 /**
@@ -418,6 +496,8 @@ exports.validateSelected = async function(){
 
     if(current.type === 'microsoft') {
         return await validateSelectedMicrosoftAccount()
+    } else if (current.type === 'azuriom') {
+        return await validateSelectedAzuriomAccount()
     } else {
         return await validateSelectedMojangAccount()
     }
